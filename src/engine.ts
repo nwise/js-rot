@@ -1,5 +1,6 @@
 import * as ROT from 'rot-js'
 
+import { generateDungeon } from './procgen';
 import { handleInput } from './input-handler';
 import { Entity } from './entity';
 import { GameMap } from './game-map';
@@ -9,6 +10,9 @@ export class Engine {
   public static readonly HEIGHT = 50;
   public static readonly MAP_WIDTH = 80;
   public static readonly MAP_HEIGHT = 45;
+  public static readonly MIN_ROOM_SIZE = 6;
+  public static readonly MAX_ROOM_SIZE = 10;
+  public static readonly MAX_ROOMS = 30;
 
   display: ROT.Display;
   gameMap: GameMap;
@@ -28,10 +32,14 @@ export class Engine {
     const container = this.display.getContainer()!;
     document.body.appendChild(container);
 
-    this.gameMap = new GameMap(
+    this.gameMap = generateDungeon(
       Engine.MAP_WIDTH,
       Engine.MAP_HEIGHT,
-      this.display
+      Engine.MAX_ROOMS,
+      Engine.MIN_ROOM_SIZE,
+      Engine.MAX_ROOM_SIZE,
+      player,
+      this.display,
     );
 
     window.addEventListener('keydown', (event) => {
