@@ -13,15 +13,14 @@ export class Engine {
   public static readonly MIN_ROOM_SIZE = 6;
   public static readonly MAX_ROOM_SIZE = 10;
   public static readonly MAX_ROOMS = 30;
+  public static readonly MAX_MONSTERS_PER_ROOM = 2;
 
   display: ROT.Display;
   gameMap: GameMap;
 
   player: Entity;
-  entities: Entity[];
 
-  constructor(entities: Entity[], player: Entity) {
-    this.entities = entities;
+  constructor(player: Entity) {
     this.player = player;
 
     this.display = new ROT.Display({
@@ -38,6 +37,7 @@ export class Engine {
       Engine.MAX_ROOMS,
       Engine.MIN_ROOM_SIZE,
       Engine.MAX_ROOM_SIZE,
+      Engine.MAX_MONSTERS_PER_ROOM,
       player,
       this.display,
     );
@@ -57,20 +57,19 @@ export class Engine {
     if (action) {
       action.perform(this, this.player);
     }
+
+    this.handleEnemyTurns();
     this.gameMap.updateFov(this.player);
     this.render();
   }
 
   render() {
     this.gameMap.render();
-    this.entities.forEach((entity) => {
-      this.display.draw(
-        entity.x,
-        entity.y,
-        entity.char,
-        entity.fg,
-        entity.bg
-      );
-    })
+  }
+
+  handleEnemyTurns() {
+    this.gameMap.nonPlayerEntities.forEach((entity) => {
+      console.log(`The ${entity.name} ponders their existence.`);
+    });
   }
 }

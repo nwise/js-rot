@@ -10,7 +10,8 @@ export class GameMap {
   constructor(
     public width: number,
     public height: number,
-    public display: Display
+    public display: Display,
+    public entities: Entity[],
   ) {
 
     this.tiles = new Array(this.height);
@@ -49,6 +50,12 @@ export class GameMap {
         this.display.draw(x, y, char, fg, bg);
       }
     }
+
+    this.entities.forEach((entity) => {
+      if (this.tiles[entity.y][entity.x].visible) {
+        this.display.draw(entity.x, entity.y, entity.char, entity.fg, entity.bg);
+      }
+    });
   }
 
   addRoom(x: number, y: number, roomTiles: Tile[][]) {
@@ -85,5 +92,15 @@ export class GameMap {
         this.tiles[y][x].seen = true;
       }
     });
+  }
+
+  getBlockingEntityAtLocation(x: number, y: number): Entity | undefined {
+    return this.entities.find(
+      (e) => e.blocksMovement && e.x === x && e.y === y,
+    );
+  }
+
+  public get nonPlayerEntities(): Entity[] {
+    return this.entities.filter((e) => e.name !== 'Player');
   }
 }
