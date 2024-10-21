@@ -3,6 +3,7 @@ import { Entity } from "./entity";
 import { Tile } from "./tile-types";
 import { WALL_TILE } from "./tile-types";
 import { Display } from "rot-js";
+import { Actor } from "./entity";
 
 export class GameMap {
   tiles: Tile[][];
@@ -22,6 +23,18 @@ export class GameMap {
       }
       this.tiles[y] = row;
     }
+  }
+
+  public get nonPlayerEntities(): Entity[] {
+    return this.entities.filter((e) => e.name !== 'Player');
+  }
+
+  public get actors(): Actor[] {
+    return this.entities
+      .filter((e) => e instanceof Actor)
+      .map((e) => e as Actor)
+      .filter((a) => a.isAlive);
+
   }
 
   isInBounds(x: number, y: number) {
@@ -51,7 +64,11 @@ export class GameMap {
       }
     }
 
-    this.entities.forEach((entity) => {
+    const sortedEntiites = this.entities
+      .slice() // shallow copy
+      .sort((a, b) => a.renderOrder - b.renderOrder);
+
+    sortedEntiites.forEach((entity) => {
       if (this.tiles[entity.y][entity.x].visible) {
         this.display.draw(entity.x, entity.y, entity.char, entity.fg, entity.bg);
       }
@@ -64,7 +81,6 @@ export class GameMap {
       const roomRow = roomTiles[curY - y];
       for (let curX = x; curX < x + roomRow.length; curX++) {
         mapRow[curX] = roomRow[curX - x];
-
       }
     }
   }
@@ -100,7 +116,7 @@ export class GameMap {
     );
   }
 
-  public get nonPlayerEntities(): Entity[] {
-    return this.entities.filter((e) => e.name !== 'Player');
+  getActorAtLocation(x: number, y: number): Actor | undefined {
+    return this.actors.find((a) => a.x === x && a.y === y);
   }
 }

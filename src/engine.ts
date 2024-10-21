@@ -2,7 +2,7 @@ import * as ROT from 'rot-js'
 
 import { generateDungeon } from './procgen';
 import { handleInput } from './input-handler';
-import { Entity } from './entity';
+import { Actor } from './entity';
 import { GameMap } from './game-map';
 
 export class Engine {
@@ -18,9 +18,7 @@ export class Engine {
   display: ROT.Display;
   gameMap: GameMap;
 
-  player: Entity;
-
-  constructor(player: Entity) {
+  constructor(public player: Actor) {
     this.player = player;
 
     this.display = new ROT.Display({
@@ -52,24 +50,33 @@ export class Engine {
 
   update(event: KeyboardEvent) {
     this.display.clear();
-    const action = handleInput(event);
 
-    if (action) {
-      action.perform(this, this.player);
+    if (this.player.fighter.hp > 0) {
+      const action = handleInput(event);
+      if (action) {
+        action.perform(this.player);
+      }
+      this.handleEnemyTurns();
     }
 
-    this.handleEnemyTurns();
     this.gameMap.updateFov(this.player);
     this.render();
   }
 
   render() {
+    this.display.drawText(
+      1,
+      47,
+      `HP: %c{red}%b{white}${this.player.fighter.hp}/%c{green}%b{white}${this.player.fighter.maxHp}`,
+    );
     this.gameMap.render();
   }
 
   handleEnemyTurns() {
-    this.gameMap.nonPlayerEntities.forEach((entity) => {
-      console.log(`The ${entity.name} ponders their existence.`);
+    this.gameMap.actors.forEach((entity) => {
+      if (entity.isAlive) {
+        entity.ai?.perform(entity)
+      }
     });
   }
 }
