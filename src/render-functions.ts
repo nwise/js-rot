@@ -1,12 +1,12 @@
-import { Display } from "rot-js";
-import { Colors } from "./colors";
+import { Display } from 'rot-js';
+import { Colors } from './colors';
 
 function drawColoredBar(
   display: Display,
   x: number,
   y: number,
   width: number,
-  color: Colors
+  color: Colors,
 ) {
   for (let pos = x; pos < x + width; pos++) {
     display.draw(pos, y, ' ', color, color);
@@ -17,7 +17,7 @@ export function renderHealthBar(
   display: Display,
   currentValue: number,
   maxValue: number,
-  totalWidth: number
+  totalWidth: number,
 ) {
   const barWidth = Math.floor((currentValue / maxValue) * totalWidth);
 

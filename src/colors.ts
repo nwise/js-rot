@@ -2,10 +2,10 @@ export enum Colors {
   White = '#ffffff',
   Black = '#000000',
   PlayerAttack = '#e0e0e0',
-  EnemyAttack = '#ffc0co',
+  EnemyAttack = '#ffc0c0',
   PlayerDie = '#ff3030',
-  EnemeyAttack = '#ffa030',
+  EnemyDie = '#ffa030',
   WelcomeText = '#20a0ff',
   BarFilled = '#006000',
-  BarEmpty = '#041010a'
+  BarEmpty = '#401010',
 }
