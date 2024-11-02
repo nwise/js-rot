@@ -149,7 +149,6 @@ function* connectRooms(
   // set our axisIndex to 0 (x axis) if horizontal or 1 (y axis) if vertical
   let axisIndex = horizontal ? 0 : 1;
 
-  console.log(current, end);
   // we'll loop until our current is the same as the end point
   while (current[0] !== end[0] || current[1] !== end[1]) {
     //are we tunneling in the positive or negative direction?
